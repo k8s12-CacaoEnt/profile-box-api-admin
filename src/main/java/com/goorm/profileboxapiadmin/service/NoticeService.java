@@ -29,10 +29,8 @@ public class NoticeService {
 
     public void registerNotice(Notice entity, Long memberId){
         validate();
-        Member member = memberRepository.findMemberByMemberId(memberId);
-        if (member == null) {
-            throw new ApiException(ExceptionEnum.MEMBER_NOT_FOUND);
-        }
+        Member member = memberRepository.findMemberByMemberId(memberId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
         entity.setMember(member);
         noticeRepository.save(entity);
     }
