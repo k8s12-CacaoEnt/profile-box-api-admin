@@ -23,7 +23,7 @@ public class MemberController {
 
     // test용 회원 리스트 출력
     @GetMapping("/test")
-    public ApiResult test(){
+    public ApiResult<List<Member>> test(){
         try{
             List<Member> list = memberService.testListAllMember();
             return ApiResult.getResult(ApiResultType.SUCCESS, "테스트 - 회원 전체 리스트 출력", list);
@@ -34,7 +34,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/member/register")
-    public ApiResult registerMemberController(@RequestBody MemberDTO dto){
+    public ApiResult<MemberDTO> registerMemberController(@RequestBody MemberDTO dto){
         try{
             Member registeredMember = memberService.saveMember(dto);
             MemberDTO registeredMemberDTO = Member.toDTO(registeredMember);
@@ -57,7 +57,7 @@ public class MemberController {
 
     //로그인 - 완전 기본. 시큐리티나 jwt 하지 않음
     @PostMapping("/member/login")
-    public ApiResult loginMemberController(@RequestBody MemberDTO dto){
+    public ApiResult<MemberDTO> loginMemberController(@RequestBody MemberDTO dto){
         try{
             Member loginMember = memberService.findLoginMember(dto);
             MemberDTO registeredMemberDTO = Member.toDTO(loginMember);
@@ -66,6 +66,5 @@ public class MemberController {
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
         }
     }
-
 
 }

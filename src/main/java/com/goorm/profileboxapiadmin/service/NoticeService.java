@@ -27,12 +27,12 @@ public class NoticeService {
         return noticeRepository.findByNoticeId(noticeId);
     }
 
-    public void registerNotice(Notice entity, Long memberId){
+    public Notice registerNotice(Notice entity, Long memberId){
         validate();
         Member member = memberRepository.findMemberByMemberId(memberId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
         entity.setMember(member);
-        noticeRepository.save(entity);
+        return noticeRepository.save(entity);
     }
 
     public Notice updateNotice(Notice entity){
