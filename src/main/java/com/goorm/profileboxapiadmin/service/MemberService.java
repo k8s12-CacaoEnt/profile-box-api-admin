@@ -1,11 +1,12 @@
 package com.goorm.profileboxapiadmin.service;
 
-import com.goorm.profileboxcomm.entity.Member;
-import com.goorm.profileboxcomm.repository.MemberRepository;
 import com.goorm.profileboxcomm.dto.member.MemberDTO;
+import com.goorm.profileboxcomm.entity.Member;
+import com.goorm.profileboxcomm.exception.ApiException;
+import com.goorm.profileboxcomm.exception.ExceptionEnum;
+import com.goorm.profileboxcomm.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +24,20 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    public Member saveMember(MemberDTO dto) {
+    public MemberDTO saveMember(MemberDTO dto) {
         dto.setMemberPassword(passwordEncoder.encode(dto.getMemberPassword()));
         Member entity = MemberDTO.toEntity(dto);
-        validateDuplicateMember(entity);
-        return memberRepository.save(entity);
+        MemberDTO memberDTO = Member.toDTO(memberRepository.save(entity));
+//        validateDuplicateMember(entity);
+        return memberDTO;
     }
 
-    public Member findLoginMember(MemberDTO dto) {
-//        Member entity = MemberDTO.toEntity(dto);
-        return memberRepository.findMemberByMemberEmailAndMemberPassword(dto.getMemberEmail(), dto.getMemberPassword());
+    public MemberDTO findLoginMemberByEmail(String email) {
+        Member member =  memberRepository.findMemberByMemberEmail(email)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.LOGIN_FAILED));
+
+        MemberDTO memberDTO = Member.toDTO(member);
+        return memberDTO;
     }
 
     public void deleteMember(Long id){
@@ -50,5 +55,4 @@ public class MemberService {
             throw new RuntimeException("Email already exist!");
         }
     }
-
 }
