@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -23,10 +24,13 @@ public class NoticeController {
 
     // 공지 전체 조회
     @GetMapping("/list")
-    public ApiResult getNoticeList(){
+    public ApiResult<List<NoticeDTO>> getNoticeList(){
         try {
             List<Notice> list = noticeService.getAllNoitce();
-            return ApiResult.getResult(ApiResultType.SUCCESS, "공지 리스트 조회", list);
+            List<NoticeDTO> noticeDTOList = list.stream()
+                    .map(o -> Notice.toDTO(o))
+                    .collect(Collectors.toList());
+            return ApiResult.getResult(ApiResultType.SUCCESS, "공지 리스트 조회", noticeDTOList);
         }catch (Exception e){
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
         }
@@ -34,7 +38,7 @@ public class NoticeController {
 
     // 특정 공지 열람
     @GetMapping("/list/{noticeId}")
-    public ApiResult openNotice(@PathVariable("noticeId") Long noticeId){
+    public ApiResult<NoticeDTO> openNotice(@PathVariable("noticeId") Long noticeId){
         try{
             Notice notice = noticeService.getSpecificNotice(noticeId);
             NoticeDTO noticeDTO = Notice.toDTO(notice);
@@ -46,12 +50,11 @@ public class NoticeController {
 
     // 공지 등록
     @PostMapping("/admin/create")
-    public ApiResult createNotice(@RequestBody NoticeDTO dto){
+    public ApiResult<Notice> createNotice(@RequestBody NoticeDTO dto){
         try{
             Notice entity = NoticeDTO.toEntity(dto);
-            System.out.println("컨트롤러쪽 공지  "+ entity);
-            noticeService.registerNotice(entity, dto.getMember_id());
-            return ApiResult.getResult(ApiResultType.SUCCESS, "공지 등록", null);
+            NoticeDTO noticeDTO = Notice.toDTO(noticeService.registerNotice(entity, dto.getMember_id()));
+            return ApiResult.getResult(ApiResultType.SUCCESS, "공지 등록", noticeDTO);
         }catch (Exception e){
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
         }
@@ -59,7 +62,7 @@ public class NoticeController {
 
     // 수정할 공지 불러오기
     @GetMapping("/admin/modify/{noticeId}")
-    public ApiResult modifyNotice(@PathVariable("noticeId") Long noticeId){
+    public ApiResult<NoticeDTO> modifyNotice(@PathVariable("noticeId") Long noticeId){
         try{
             Notice notice = noticeService.getSpecificNotice(noticeId);
             NoticeDTO noticeDTO = Notice.toDTO(notice);
@@ -71,7 +74,7 @@ public class NoticeController {
 
     // 공지 내용 수정시키기
     @PutMapping("/admin/update")
-    public ApiResult updateNotice(@RequestBody NoticeDTO dto){
+    public ApiResult<NoticeDTO> updateNotice(@RequestBody NoticeDTO dto){
         try{
             Notice notice = NoticeDTO.toEntity(dto);
             NoticeDTO noticeDTO = Notice.toDTO(noticeService.updateNotice(notice));

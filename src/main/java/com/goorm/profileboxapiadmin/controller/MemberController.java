@@ -22,8 +22,8 @@ public class MemberController {
     MemberService memberService;
 
     // test용 회원 리스트 출력
-    @GetMapping("/member/all")
-    public ApiResult test(){
+    @GetMapping("/test")
+    public ApiResult<List<Member>> test(){
         try{
             List<Member> list = memberService.testListAllMember();
             return ApiResult.getResult(ApiResultType.SUCCESS, "테스트 - 회원 전체 리스트 출력", list);
@@ -34,7 +34,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/member/register")
-    public ApiResult registerMemberController(@RequestBody MemberDTO dto){
+    public ApiResult<MemberDTO> registerMemberController(@RequestBody MemberDTO dto){
         try{
             Member registeredMember = memberService.saveMember(dto);
             MemberDTO registeredMemberDTO = Member.toDTO(registeredMember);
@@ -58,7 +58,7 @@ public class MemberController {
     //로그인 컨트롤러 따로 필요 없음.
     /*
     @PostMapping("/member/login")
-    public ApiResult loginMemberController(@RequestBody MemberDTO dto){
+    public ApiResult<MemberDTO> loginMemberController(@RequestBody MemberDTO dto){
         try{
             Member loginMember = memberService.findLoginMember(dto);
             MemberDTO registeredMemberDTO = Member.toDTO(loginMember);
