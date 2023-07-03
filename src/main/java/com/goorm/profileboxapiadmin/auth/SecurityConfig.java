@@ -46,10 +46,9 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .authorizeHttpRequests()
                 // hasRole이나 hasAnyRole은 "ROLE_" prefix를 붙여버림.
-//                .requestMatchers("v1/notice/admin/**").hasAnyAuthority("ADMIN", "PRODUCER")
+                .requestMatchers("v1/notice/admin/**").hasAnyAuthority("ADMIN", "PRODUCER")
                 //.requestMatchers("v1/notice/admin/**").hasAuthority("ADMIN")
-//                .anyRequest().permitAll();
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
         return http.build();
     }
 
