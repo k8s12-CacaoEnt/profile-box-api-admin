@@ -22,7 +22,7 @@ public class MemberController {
     MemberService memberService;
 
     // test용 회원 리스트 출력
-    @GetMapping("/test")
+    @GetMapping("/member/all")
     public ApiResult test(){
         try{
             List<Member> list = memberService.testListAllMember();
@@ -55,7 +55,8 @@ public class MemberController {
         }
     }
 
-    //로그인 - 완전 기본. 시큐리티나 jwt 하지 않음
+    //로그인 컨트롤러 따로 필요 없음.
+    /*
     @PostMapping("/member/login")
     public ApiResult loginMemberController(@RequestBody MemberDTO dto){
         try{
@@ -67,5 +68,5 @@ public class MemberController {
         }
     }
 
-
+*/
 }

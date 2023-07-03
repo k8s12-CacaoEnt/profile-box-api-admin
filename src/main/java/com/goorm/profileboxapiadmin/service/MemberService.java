@@ -5,6 +5,8 @@ import com.goorm.profileboxcomm.repository.MemberRepository;
 import com.goorm.profileboxcomm.dto.member.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +17,14 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
+    private final BCryptPasswordEncoder passwordEncoder;
     // test용 멤머 모두 출력
     public List<Member> testListAllMember(){
         return memberRepository.findAll();
     }
 
     public Member saveMember(MemberDTO dto) {
+        dto.setMemberPassword(passwordEncoder.encode(dto.getMemberPassword()));
         Member entity = MemberDTO.toEntity(dto);
         validateDuplicateMember(entity);
         return memberRepository.save(entity);
@@ -29,7 +32,7 @@ public class MemberService {
 
     public Member findLoginMember(MemberDTO dto) {
 //        Member entity = MemberDTO.toEntity(dto);
-        return memberRepository.findMemberByMemberEmailAndMemberPassword(dto.getEmail(), dto.getPassword());
+        return memberRepository.findMemberByMemberEmailAndMemberPassword(dto.getMemberEmail(), dto.getMemberPassword());
     }
 
     public void deleteMember(Long id){

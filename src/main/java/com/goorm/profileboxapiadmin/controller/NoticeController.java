@@ -48,8 +48,8 @@ public class NoticeController {
     @PostMapping("/admin/create")
     public ApiResult createNotice(@RequestBody NoticeDTO dto){
         try{
-            System.out.println("입력된 공지  "+ dto);
             Notice entity = NoticeDTO.toEntity(dto);
+            System.out.println("컨트롤러쪽 공지  "+ entity);
             noticeService.registerNotice(entity, dto.getMember_id());
             return ApiResult.getResult(ApiResultType.SUCCESS, "공지 등록", null);
         }catch (Exception e){

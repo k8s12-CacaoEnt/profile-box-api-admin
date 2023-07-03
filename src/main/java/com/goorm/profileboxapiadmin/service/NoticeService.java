@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +30,8 @@ public class NoticeService {
 
     public void registerNotice(Notice entity, Long memberId){
         validate();
-        Member member = memberRepository.findMemberByMemberId(memberId);
+        Member member = memberRepository.findMemberByMemberId(memberId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
         if (member == null) {
             throw new ApiException(ExceptionEnum.MEMBER_NOT_FOUND);
         }
