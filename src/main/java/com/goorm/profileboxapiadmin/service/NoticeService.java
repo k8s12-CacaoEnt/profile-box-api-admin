@@ -7,7 +7,7 @@ import com.goorm.profileboxcomm.exception.ApiException;
 import com.goorm.profileboxcomm.exception.ExceptionEnum;
 import com.goorm.profileboxcomm.repository.MemberRepository;
 import com.goorm.profileboxcomm.repository.NoticeRepository;
-import com.goorm.profileboxcomm.security.PrincipalDetails;
+import com.goorm.profileboxapiadmin.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
