@@ -2,16 +2,11 @@ package com.goorm.profileboxapiadmin.controller;
 
 import com.goorm.profileboxapiadmin.service.NoticeService;
 import com.goorm.profileboxcomm.dto.notice.NoticeDTO;
-import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.entity.Notice;
 import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
-import com.goorm.profileboxcomm.security.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
