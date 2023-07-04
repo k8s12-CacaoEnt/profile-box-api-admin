@@ -3,6 +3,15 @@ spring:
     include:
       - comm
 ---
+server:
+  config:
+    activate:
+      on-profile: prod
+  port: 8080
+  error.include-message: always
+  tomcat:
+    max-swallow-size: -1
+---
 logging:
   level:
     root: DEBUG
@@ -21,6 +30,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/profile_box
     username: admin
     password: admin
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: myGroup
 #spring:
 #  config:
 #    activate:
