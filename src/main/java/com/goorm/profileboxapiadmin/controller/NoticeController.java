@@ -2,13 +2,18 @@ package com.goorm.profileboxapiadmin.controller;
 
 import com.goorm.profileboxapiadmin.service.NoticeService;
 import com.goorm.profileboxcomm.dto.notice.NoticeDTO;
+import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.entity.Notice;
 import com.goorm.profileboxcomm.exception.ApiException;
 import com.goorm.profileboxcomm.exception.ExceptionEnum;
 import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
+import com.goorm.profileboxcomm.security.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,9 +58,11 @@ public class NoticeController {
     public ApiResult<Notice> createNotice(@RequestBody NoticeDTO dto){
         try{
             Notice entity = NoticeDTO.toEntity(dto);
-            NoticeDTO noticeDTO = Notice.toDTO(noticeService.registerNotice(entity, dto.getMember_id()));
+            NoticeDTO noticeDTO = Notice.toDTO(noticeService.registerNotice(entity));
+            System.out.println("저장된 notice: " + noticeDTO);
             return ApiResult.getResult(ApiResultType.SUCCESS, "공지 등록", noticeDTO);
         }catch (Exception e){
+            System.out.println("notice 생성 에러!: " + e.getMessage());
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
         }
     }
@@ -73,11 +80,11 @@ public class NoticeController {
     }
 
     // 공지 내용 수정시키기
-    @PutMapping("/admin/update")
-    public ApiResult<NoticeDTO> updateNotice(@RequestBody NoticeDTO dto){
+    @PutMapping("/admin/update/{noticeId}")
+    public ApiResult<NoticeDTO> updateNotice(@RequestBody NoticeDTO dto, @PathVariable("noticeId") Long noticeId){
         try{
             Notice notice = NoticeDTO.toEntity(dto);
-            NoticeDTO noticeDTO = Notice.toDTO(noticeService.updateNotice(notice));
+            NoticeDTO noticeDTO = Notice.toDTO(noticeService.updateNotice(notice, noticeId));
             return ApiResult.getResult(ApiResultType.SUCCESS, "공지 수정", noticeDTO);
         }catch (Exception e){
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);

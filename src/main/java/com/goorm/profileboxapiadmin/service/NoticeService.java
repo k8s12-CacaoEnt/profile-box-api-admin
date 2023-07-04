@@ -5,8 +5,11 @@ import com.goorm.profileboxcomm.exception.ExceptionEnum;
 import com.goorm.profileboxcomm.repository.MemberRepository;
 import com.goorm.profileboxcomm.repository.NoticeRepository;
 import com.goorm.profileboxcomm.exception.ApiException;
+import com.goorm.profileboxcomm.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -25,28 +28,29 @@ public class NoticeService {
     }
 
     public Notice getSpecificNotice(Long noticeId){
-        return noticeRepository.findByNoticeId(noticeId);
+        Notice notice = noticeRepository.findByNoticeId(noticeId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.NOTICE_NOT_FOUND));
+        return notice;
     }
 
-    public Notice registerNotice(Notice entity, Long memberId){
+    public Notice registerNotice(Notice entity){
         validate();
-        Member member = memberRepository.findMemberByMemberId(memberId)
-                .orElseThrow(() -> new ApiException(ExceptionEnum.MEMBER_NOT_FOUND));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails)auth.getPrincipal();
+        Member member = principalDetails.getMemberEntity();
+        System.out.println("공지 등록하는 member: " + member);
         entity.setMember(member);
         return noticeRepository.save(entity);
     }
 
-    public Notice updateNotice(Notice entity){
+    public Notice updateNotice(Notice entity, Long noticeId){
         validate();
-        final Notice origin = noticeRepository.findByNoticeId(entity.getNoticeId());
-        origin.setNoticeTitle(entity.getNoticeTitle());
-        origin.getNoticeContent();
-        origin.setFilmoType(entity.getFilmoType());
-        origin.setFilmoName(entity.getFilmoName());
-        origin.setFilmoRole(entity.getFilmoRole());
-        origin.setFilmingStartPeriod(entity.getFilmingStartPeriod());
-        origin.setFilmingEndPeriod(entity.getFilmingEndPeriod());
+        Notice origin = noticeRepository.findByNoticeId(noticeId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.NOTICE_NOT_FOUND));
         //createDt, modifyDt는 Entity PrePersist, PreUpdate 에 의해 일괄 처리
+
+        if()
+
         return getSpecificNotice(entity.getNoticeId());
     }
 

@@ -67,6 +67,5 @@ public class MemberController {
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
         }
     }
-
 */
 }
