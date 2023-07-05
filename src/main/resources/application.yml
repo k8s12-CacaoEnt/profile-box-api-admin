@@ -26,10 +26,10 @@ spring:
   config:
     activate:
       on-profile: local
-  datasource:
-    url: jdbc:postgresql://localhost:5432/profile_box
-    username: admin
-    password: admin
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/profile_box
+#    username: admin
+#    password: admin
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -43,6 +43,8 @@ spring:
 #    console:
 #      enabled: true  # H2 Console을 사용할지 여부 (H2 Console은 H2 Database를 UI로 제공해주는 기능)
 #      path: /h2-console  # H2 Console의 Path
+
+
 #  # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
 #  datasource:
 #    driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
@@ -56,3 +58,4 @@ spring:
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       show-sql: true
+      #dialect: org.hibernate.dialect.H2Dialect

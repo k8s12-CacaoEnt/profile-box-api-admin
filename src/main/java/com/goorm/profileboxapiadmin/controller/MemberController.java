@@ -15,28 +15,28 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/auth")
+@RequestMapping("/v1")
 public class MemberController {
 
     @Autowired
     MemberService memberService;
 
-    // test용 회원 리스트 출력
-    @GetMapping("/test")
+    // 회원 전체 리스트 출력
+    @GetMapping("/member/all")
     public ApiResult<List<Member>> test() {
         List<Member> list = memberService.testListAllMember();
         return ApiResult.getResult(ApiResultType.SUCCESS, "테스트 - 회원 전체 리스트 출력", list);
     }
 
     // 회원 가입
-    @PostMapping("/member/register")
+    @PostMapping("/member")
     public ApiResult<MemberDTO> registerMemberController(@RequestBody MemberDTO dto) {
         MemberDTO registeredMemberDTO = memberService.saveMember(dto);
         return ApiResult.getResult(ApiResultType.SUCCESS, "회원가입", registeredMemberDTO);
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/member/withdrawal")
+    @DeleteMapping("/member")
     public ApiResult withdrawalMemberController(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         memberService.deleteMember(principalDetails.getMember().getMemberId());
         return ApiResult.getResult(ApiResultType.SUCCESS, "회원탈퇴", null);
@@ -55,7 +55,7 @@ public class MemberController {
     }
 */
     // 회원 조회 (다른 BE API 서버에서도 호출하는 함수)
-    @GetMapping("/member/{email}")
+    @GetMapping("/member/email/{email}")
     public ApiResult<MemberDTO> getMemberInfoController(@PathVariable("email") String email){
         MemberDTO member = memberService.findLoginMemberByEmail(email);
         return ApiResult.getResult(ApiResultType.SUCCESS, "로그인", member);
