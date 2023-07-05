@@ -1,5 +1,6 @@
 package com.goorm.profileboxapiadmin.controller;
 
+import com.goorm.profileboxapiadmin.auth.PrincipalDetails;
 import com.goorm.profileboxapiadmin.service.NoticeService;
 import com.goorm.profileboxcomm.dto.notice.NoticeDTO;
 import com.goorm.profileboxcomm.entity.Notice;
@@ -7,6 +8,7 @@ import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -41,8 +43,8 @@ public class NoticeController {
 
     // 공지 등록
     @PostMapping("/admin/create")
-    public ApiResult<Notice> createNotice(@RequestBody NoticeDTO dto) throws ParseException {
-        Notice notice = noticeService.registerNotice(dto);
+    public ApiResult<Notice> createNotice(@RequestBody NoticeDTO dto, @AuthenticationPrincipal PrincipalDetails principal) throws ParseException {
+        Notice notice = noticeService.registerNotice(dto, principal.getMember());
         NoticeDTO noticeDTO = Notice.toDTO(notice);
         return ApiResult.getResult(ApiResultType.SUCCESS, "공지 등록", noticeDTO);
     }
@@ -57,10 +59,9 @@ public class NoticeController {
     }
 
     // 공지 내용 수정시키기
-    @PutMapping("/admin/update/{noticeId}")
+    @PatchMapping("/admin/update/{noticeId}")
     public ApiResult<NoticeDTO> updateNotice(@RequestBody NoticeDTO dto, @PathVariable("noticeId") Long noticeId) throws ParseException {
-        Notice notice = NoticeDTO.toEntity(dto);
-        NoticeDTO noticeDTO = Notice.toDTO(noticeService.updateNotice(notice));
+        NoticeDTO noticeDTO = Notice.toDTO(noticeService.updateNotice(dto, noticeId));
         return ApiResult.getResult(ApiResultType.SUCCESS, "공지 수정", noticeDTO);
     }
 

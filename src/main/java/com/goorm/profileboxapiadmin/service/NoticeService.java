@@ -1,19 +1,22 @@
 package com.goorm.profileboxapiadmin.service;
 
+import com.goorm.profileboxapiadmin.auth.PrincipalDetails;
 import com.goorm.profileboxcomm.dto.notice.NoticeDTO;
 import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.entity.Notice;
+import com.goorm.profileboxcomm.enumeration.FilmoType;
 import com.goorm.profileboxcomm.exception.ApiException;
 import com.goorm.profileboxcomm.exception.ExceptionEnum;
 import com.goorm.profileboxcomm.repository.MemberRepository;
 import com.goorm.profileboxcomm.repository.NoticeRepository;
-import com.goorm.profileboxapiadmin.auth.PrincipalDetails;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.util.List;
 
@@ -25,47 +28,51 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public List<Notice> getAllNoitce(){
         return noticeRepository.findAll();
     }
 
+    @Transactional
     public Notice getSpecificNotice(Long noticeId){
         Notice notice = noticeRepository.findByNoticeId(noticeId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.NOTICE_NOT_FOUND));
         return notice;
     }
 
-    public Notice registerNotice(NoticeDTO dto) throws ParseException {
+    @Transactional
+    public Notice registerNotice(NoticeDTO dto, Member member) throws ParseException {
         validate();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails)auth.getPrincipal();
-        Member member = principalDetails.getMemberEntity();
         Notice entity = NoticeDTO.toEntity(dto);
         entity.setMember(member);
         return noticeRepository.save(entity);
     }
 
-    public Notice updateNotice(Notice entity){
+    @Transactional
+    public Notice updateNotice(NoticeDTO dto, Long noticeId){
         validate();
-        final Notice origin = noticeRepository.findByNoticeId(entity.getNoticeId())
+        final Notice origin = noticeRepository.findByNoticeId(noticeId)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.NOTICE_NOT_FOUND));
-        origin.setNoticeTitle(entity.getNoticeTitle());
-        origin.getNoticeContent();
-        origin.setFilmoType(entity.getFilmoType());
-        origin.setFilmoName(entity.getFilmoName());
-        origin.setFilmoRole(entity.getFilmoRole());
-        origin.setFilmingStartPeriod(entity.getFilmingStartPeriod());
-        origin.setFilmingEndPeriod(entity.getFilmingEndPeriod());
+
+        if(dto.getTitle() != null) origin.setNoticeTitle(dto.getTitle());
+        if(dto.getContent() != null) origin.setNoticeContent(dto.getContent());
+        if(dto.getFilmo_type() != null) origin.setFilmoType(FilmoType.valueOf(dto.getFilmo_type()));
+        if(dto.getFilmo_name() != null) origin.setFilmoName(dto.getFilmo_name());
+        if(dto.getFilmo_role() != null) origin.setFilmoRole(dto.getFilmo_role());
+        if(dto.getFilming_end_period() != null) origin.setFilmingEndPeriod(Date.valueOf(dto.getFilming_end_period()));
+        if(dto.getFilming_start_period() != null) origin.setFilmingStartPeriod(Date.valueOf(dto.getFilming_start_period()));
+        if(dto.getApply_deadline_dt() != null) origin.setApplyDeadlineDt(Date.valueOf(dto.getApply_deadline_dt()));
+
         //createDt, modifyDt는 Entity PrePersist, PreUpdate 에 의해 일괄 처리
 
-        return getSpecificNotice(entity.getNoticeId());
+        return getSpecificNotice(noticeId);
     }
 
-    public List<Notice> deleteNotice(Long noticeId){
+    @Transactional
+    public void deleteNotice(Long noticeId){
         validate();
         try{
             noticeRepository.deleteByNoticeId(noticeId);
-            return getAllNoitce();
         }catch (Exception e){
             throw new RuntimeException("delete err: " + e.getMessage());
         }

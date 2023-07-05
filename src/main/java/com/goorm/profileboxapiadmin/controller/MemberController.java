@@ -1,5 +1,6 @@
 package com.goorm.profileboxapiadmin.controller;
 
+import com.goorm.profileboxapiadmin.auth.PrincipalDetails;
 import com.goorm.profileboxapiadmin.service.MemberService;
 import com.goorm.profileboxcomm.dto.member.MemberDTO;
 import com.goorm.profileboxcomm.entity.Member;
@@ -7,6 +8,7 @@ import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,9 +36,9 @@ public class MemberController {
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/member/withdrawal/{id}")
-    public ApiResult withdrawalMemberController(@PathVariable("id") Long id) {
-        memberService.deleteMember(id);
+    @DeleteMapping("/member/withdrawal")
+    public ApiResult withdrawalMemberController(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        memberService.deleteMember(principalDetails.getMember().getMemberId());
         return ApiResult.getResult(ApiResultType.SUCCESS, "회원탈퇴", null);
     }
 
