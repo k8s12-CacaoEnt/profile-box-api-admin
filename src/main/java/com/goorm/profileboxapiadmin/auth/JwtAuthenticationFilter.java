@@ -56,13 +56,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // response 설정
 //        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+//        ResponseCookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
         Cookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
         response.addCookie(cookie); // 응답에 쿠키 추가
+//        response.addHeader("Set-Cookie", cookie.toString());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
-        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.SUCCESS, "로그인 성공! jwt 토큰 발급 완료", jwtToken));
+        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.SUCCESS, "로그인 성공! jwt 토큰 발급 완료", null));
         response.getWriter().write(resStr);
 
         System.out.println("토큰 발급됨");

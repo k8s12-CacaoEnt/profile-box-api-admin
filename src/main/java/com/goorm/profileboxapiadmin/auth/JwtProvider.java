@@ -42,7 +42,7 @@ public class JwtProvider {
         return clientJwtToken;
     }
 
-    // Response 에 세팅할 JwtToken 쿠키 생성
+//     Response 에 세팅할 JwtToken 쿠키 생성
     public Cookie createJwtAccessTokenCookie(String jwtToken){
         Cookie cookie = new Cookie(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken);
         cookie.setMaxAge(JwtProperties.EXPIRATION_TIME); //
@@ -50,6 +50,14 @@ public class JwtProvider {
         cookie.setDomain(domain);
 //        cookie.setSecure(true); // Secure 속성 설정
         cookie.setHttpOnly(true); // HttpOnly 속성 설정
+//    public ResponseCookie createJwtAccessTokenCookie(String jwtToken){
+//        ResponseCookie cookie = ResponseCookie.from(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken)
+////                .domain(domain)
+//                .sameSite("None")
+//                .path("/")
+//                .httpOnly(true)
+//                .maxAge(JwtProperties.EXPIRATION_TIME)
+//                .build();
         return cookie;
     }
 }
