@@ -29,7 +29,7 @@ public class JwtProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("profilehub_access_token")) {
+                if (cookie.getName().equals(JwtProperties.ACCESS_TOKEN_COOKIE)) {
                     clientJwtToken = cookie.getValue();
                     break;
                 }

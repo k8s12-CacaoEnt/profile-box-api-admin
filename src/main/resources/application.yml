@@ -30,10 +30,10 @@ spring:
 #    url: jdbc:postgresql://localhost:5432/profile_box
 #    username: admin
 #    password: admin
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: myGroup
+#  kafka:
+#    bootstrap-servers: localhost:9092
+#    consumer:
+#      group-id: myGroup
 #spring:
 #  config:
 #    activate:
