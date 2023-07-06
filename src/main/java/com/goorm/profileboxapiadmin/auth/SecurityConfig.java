@@ -22,6 +22,7 @@ public class SecurityConfig {
     private CorsFilter corsFilter;
     private AuthenticationConfiguration authenticationConfiguration;
     private MemberRepository memberRepository;
+    private JwtProvider jwtProvider;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
@@ -40,8 +41,8 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(corsFilter)
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProvider))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository, jwtProvider))
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeHttpRequests()

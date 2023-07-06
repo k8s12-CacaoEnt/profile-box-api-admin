@@ -20,24 +20,34 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private MemberRepository memberRepository;
+    private JwtProvider jwtProvider;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, JwtProvider jwtProvider) {
         super(authenticationManager);
         this.memberRepository = memberRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         System.out.println("authorization 요청");
-        String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
-        // if 조건문 코드 한줄로 딱 하는거 찾아보기
-        if(jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)){
+
+        String clientJwtToken = jwtProvider.getJwtAccessTokenFromCookie(request);
+
+        if(clientJwtToken.equals("")){
             chain.doFilter(request, response);
-            System.out.println("Header에 jwt관련 정보 없음");
-            return; // status 코드 확인 필요.
+            return;
         }
 
-        String clientJwtToken = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX,"");
+//        String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
+//        // if 조건문 코드 한줄로 딱 하는거 찾아보기
+//        if(jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)){
+//            chain.doFilter(request, response);
+//            System.out.println("Header에 jwt관련 정보 없음");
+//            return; // status 코드 확인 필요.
+//        }
+
+//        String clientJwtToken = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX,"");
         String email = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(clientJwtToken).getClaim("email").asString();
 //        System.out.println("authorization 요청한 클라이언트");
 //        System.out.println("client가 가졌던 jwt 토큰: " + clientJwtToken);
