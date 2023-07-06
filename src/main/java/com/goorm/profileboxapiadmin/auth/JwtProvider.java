@@ -4,12 +4,16 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JwtProvider {
+
+    @Value("${server.reactive.session.cookie.domain}")
+    private String domain;
 
     // JwtToken 생성
     public String createJwtAccessToken(PrincipalDetails principalDetails){
@@ -43,6 +47,7 @@ public class JwtProvider {
         Cookie cookie = new Cookie(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken);
         cookie.setMaxAge(JwtProperties.EXPIRATION_TIME); //
         cookie.setPath("/"); // 경로 설정
+        cookie.setDomain(domain);
 //        cookie.setSecure(true); // Secure 속성 설정
         cookie.setHttpOnly(true); // HttpOnly 속성 설정
         return cookie;
