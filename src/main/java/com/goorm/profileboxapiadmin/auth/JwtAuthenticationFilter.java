@@ -6,10 +6,10 @@ import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -56,10 +56,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // response 설정
 //        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
-//        ResponseCookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
-        Cookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
-        response.addCookie(cookie); // 응답에 쿠키 추가
-//        response.addHeader("Set-Cookie", cookie.toString());
+        ResponseCookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
+//        Cookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
+//        response.addCookie(cookie); // 응답에 쿠키 추가
+        response.addHeader("Set-Cookie", cookie.toString());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

@@ -1,19 +1,15 @@
 package com.goorm.profileboxapiadmin.service;
 
-import com.goorm.profileboxapiadmin.auth.PrincipalDetails;
 import com.goorm.profileboxcomm.dto.notice.NoticeDTO;
 import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.entity.Notice;
 import com.goorm.profileboxcomm.enumeration.FilmoType;
 import com.goorm.profileboxcomm.exception.ApiException;
 import com.goorm.profileboxcomm.exception.ExceptionEnum;
-import com.goorm.profileboxcomm.repository.MemberRepository;
 import com.goorm.profileboxcomm.repository.NoticeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -26,7 +22,6 @@ import java.util.List;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public List<Notice> getAllNoitce(){
@@ -62,8 +57,6 @@ public class NoticeService {
         if(dto.getFilming_end_period() != null) origin.setFilmingEndPeriod(Date.valueOf(dto.getFilming_end_period()));
         if(dto.getFilming_start_period() != null) origin.setFilmingStartPeriod(Date.valueOf(dto.getFilming_start_period()));
         if(dto.getApply_deadline_dt() != null) origin.setApplyDeadlineDt(Date.valueOf(dto.getApply_deadline_dt()));
-
-        //createDt, modifyDt는 Entity PrePersist, PreUpdate 에 의해 일괄 처리
 
         return getSpecificNotice(noticeId);
     }

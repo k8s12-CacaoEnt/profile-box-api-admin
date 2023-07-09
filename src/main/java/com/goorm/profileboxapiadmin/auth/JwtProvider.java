@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -43,21 +44,23 @@ public class JwtProvider {
     }
 
 //     Response 에 세팅할 JwtToken 쿠키 생성
-    public Cookie createJwtAccessTokenCookie(String jwtToken){
-        Cookie cookie = new Cookie(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken);
-        cookie.setMaxAge(JwtProperties.EXPIRATION_TIME); //
-        cookie.setPath("/"); // 경로 설정
-        cookie.setDomain(domain);
-//        cookie.setSecure(true); // Secure 속성 설정
-        cookie.setHttpOnly(true); // HttpOnly 속성 설정
-//    public ResponseCookie createJwtAccessTokenCookie(String jwtToken){
-//        ResponseCookie cookie = ResponseCookie.from(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken)
-////                .domain(domain)
-//                .sameSite("None")
-//                .path("/")
-//                .httpOnly(true)
-//                .maxAge(JwtProperties.EXPIRATION_TIME)
-//                .build();
+//    public Cookie createJwtAccessTokenCookie(String jwtToken){
+//        Cookie cookie = new Cookie(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken);
+//        cookie.setMaxAge(JwtProperties.EXPIRATION_TIME); //
+//        cookie.setPath("/"); // 경로 설정
+//        cookie.setDomain(domain);
+////        cookie.setSecure(true); // Secure 속성 설정
+//        cookie.setHttpOnly(true); // HttpOnly 속성 설정
+    public ResponseCookie createJwtAccessTokenCookie(String jwtToken){
+
+        ResponseCookie cookie = ResponseCookie.from(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken)
+                .domain(domain)
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .httpOnly(true)
+                .maxAge(JwtProperties.EXPIRATION_TIME)
+                .build();
         return cookie;
     }
 }

@@ -14,7 +14,7 @@ server:
   reactive:
     session:
       cookie:
-        domain: profilehub.info
+        domain: .profilehub.info
 ---
 logging:
   level:
