@@ -8,6 +8,7 @@ import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,7 @@ public class NoticeController {
     public ApiResult<Notice> createNotice(@RequestBody NoticeDTO dto, @AuthenticationPrincipal PrincipalDetails principal) throws ParseException {
         Notice notice = noticeService.registerNotice(dto, principal.getMember());
         NoticeDTO noticeDTO = Notice.toDTO(notice);
-        return ApiResult.getResult(ApiResultType.SUCCESS, "공지 등록", noticeDTO);
+        return ApiResult.getResult(ApiResultType.SUCCESS, "공지 등록", noticeDTO, HttpStatus.CREATED);
     }
 
     // 수정할 공지 불러오기 - noticeId로

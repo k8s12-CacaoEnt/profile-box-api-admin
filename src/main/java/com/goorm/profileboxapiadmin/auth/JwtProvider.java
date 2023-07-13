@@ -16,6 +16,9 @@ public class JwtProvider {
     @Value("${server.reactive.session.cookie.domain}")
     private String domain;
 
+    @Value("${server.reactive.session.cookie.secure}")
+    private boolean isSecure;
+
     // JwtToken 생성
     public String createJwtAccessToken(PrincipalDetails principalDetails){
         String jwtToken = JWT.create()
@@ -25,6 +28,19 @@ public class JwtProvider {
                 .withClaim("id", principalDetails.getMemberEntity().getMemberId())
                 .withClaim("username", principalDetails.getMemberEntity().getMemberName())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+        return jwtToken;
+    }
+
+    // Request 헤더에서 JwtToken 가져오기
+    public String getJwtAccessTokenFromHeader(HttpServletRequest request){
+
+        String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
+        String jwtToken = "";
+
+        if(jwtHeader != null && jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)){
+            jwtToken = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX,"");
+        }
+        System.out.println("jwtTokenjwtToken ::: " +  jwtToken);
         return jwtToken;
     }
 
@@ -43,20 +59,12 @@ public class JwtProvider {
         return clientJwtToken;
     }
 
-//     Response 에 세팅할 JwtToken 쿠키 생성
-//    public Cookie createJwtAccessTokenCookie(String jwtToken){
-//        Cookie cookie = new Cookie(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken);
-//        cookie.setMaxAge(JwtProperties.EXPIRATION_TIME); //
-//        cookie.setPath("/"); // 경로 설정
-//        cookie.setDomain(domain);
-////        cookie.setSecure(true); // Secure 속성 설정
-//        cookie.setHttpOnly(true); // HttpOnly 속성 설정
+    // Response 에 세팅할 JwtToken 쿠키 생성
     public ResponseCookie createJwtAccessTokenCookie(String jwtToken){
-
         ResponseCookie cookie = ResponseCookie.from(JwtProperties.ACCESS_TOKEN_COOKIE, jwtToken)
                 .domain(domain)
                 .sameSite("None")
-                .secure(true)
+                .secure(isSecure)
                 .path("/")
                 .httpOnly(true)
                 .maxAge(JwtProperties.EXPIRATION_TIME)

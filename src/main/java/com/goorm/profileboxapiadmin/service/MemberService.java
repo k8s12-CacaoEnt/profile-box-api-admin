@@ -20,6 +20,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
     // test용 멤머 모두 출력
     @Transactional
     public List<Member> testListAllMember(){
@@ -36,7 +37,14 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberDTO findLoginMemberByEmail(String email) {
+    public Member findLoginMemberByEmail(String email) {
+        Member member =  memberRepository.findMemberByMemberEmail(email)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.LOGIN_FAILED));
+        return member;
+    }
+
+    @Transactional
+    public MemberDTO findLoginMemberByEmailToDto(String email) {
         Member member =  memberRepository.findMemberByMemberEmail(email)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.LOGIN_FAILED));
 

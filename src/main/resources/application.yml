@@ -15,6 +15,7 @@ server:
     session:
       cookie:
         domain: .profilehub.info
+        secure: true
 ---
 logging:
   level:

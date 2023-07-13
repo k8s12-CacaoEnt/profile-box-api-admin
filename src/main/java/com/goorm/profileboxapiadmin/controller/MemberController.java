@@ -8,6 +8,7 @@ import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class MemberController {
     @PostMapping("/member")
     public ApiResult<MemberDTO> registerMemberController(@RequestBody MemberDTO dto) {
         MemberDTO registeredMemberDTO = memberService.saveMember(dto);
-        return ApiResult.getResult(ApiResultType.SUCCESS, "회원가입", registeredMemberDTO);
+        return ApiResult.getResult(ApiResultType.SUCCESS, "회원가입", registeredMemberDTO, HttpStatus.CREATED);
     }
 
     // 회원 탈퇴
@@ -57,7 +58,7 @@ public class MemberController {
     // 회원 조회 (다른 BE API 서버에서도 호출하는 함수)
     @GetMapping("/member/email/{email}")
     public ApiResult<MemberDTO> getMemberInfoController(@PathVariable("email") String email){
-        MemberDTO member = memberService.findLoginMemberByEmail(email);
+        MemberDTO member = memberService.findLoginMemberByEmailToDto(email);
         return ApiResult.getResult(ApiResultType.SUCCESS, "로그인", member);
     }
 

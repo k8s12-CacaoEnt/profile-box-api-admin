@@ -1,8 +1,9 @@
 package com.goorm.profileboxapiadmin.auth;
 
 
-import com.goorm.profileboxcomm.repository.MemberRepository;
-import lombok.AllArgsConstructor;
+import com.goorm.profileboxapiadmin.service.MemberService;
+import com.goorm.profileboxcomm.service.MemberRedisService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,25 +11,19 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private CorsFilter corsFilter;
-    private AuthenticationConfiguration authenticationConfiguration;
-    private MemberRepository memberRepository;
-    private JwtProvider jwtProvider;
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
+    private final CorsFilter corsFilter;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final MemberService memberService;
+    private final MemberRedisService memberRedisService;
+    private final JwtProvider jwtProvider;
 
     public AuthenticationManager authenticationManager() throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
@@ -41,13 +36,14 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(corsFilter)
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProvider))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository, jwtProvider))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProvider, memberRedisService))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberService, jwtProvider, memberRedisService))
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeHttpRequests()
                 // hasRole이나 hasAnyRole은 "ROLE_" prefix를 붙여버림.
                 .requestMatchers("v1/notice/admin/**").hasAnyAuthority("ADMIN", "PRODUCER")
+                .requestMatchers("/v1/open/**").permitAll()
                 //.requestMatchers("v1/notice/admin/**").hasAuthority("ADMIN")
                 .anyRequest().permitAll();
         return http.build();

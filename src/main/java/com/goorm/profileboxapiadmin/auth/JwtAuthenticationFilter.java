@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
+import com.goorm.profileboxcomm.service.MemberRedisService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,11 +22,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+    private MemberRedisService memberRedisService;
 
     private JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider, MemberRedisService memberRedisService) {
         this.authenticationManager = authenticationManager;
+        this.memberRedisService = memberRedisService;
         this.jwtProvider = jwtProvider;
         setFilterProcessesUrl("/v1/auth/member/login");
     }
@@ -54,17 +57,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Hash암호 방식.
         String jwtToken = jwtProvider.createJwtAccessToken(principalDetails);
 
-        // response 설정
-//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
-        ResponseCookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
-//        Cookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
-//        response.addCookie(cookie); // 응답에 쿠키 추가
-        response.addHeader("Set-Cookie", cookie.toString());
+        // Redis 저장
+//        memberRedisService.saveMemberToRedis(jwtToken, principalDetails.getMember());
 
+        // response 설정
+//        ResponseCookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
+//        response.addHeader("Set-Cookie", cookie.toString());
+
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
-        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.SUCCESS, "로그인 성공! jwt 토큰 발급 완료", null));
+        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.SUCCESS, "로그인 성공! jwt 토큰 발급 완료", jwtToken));
         response.getWriter().write(resStr);
 
         System.out.println("토큰 발급됨");
@@ -77,7 +81,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
-        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.ERROR, "로그인 실패!", failed.getMessage()));
+        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.ERROR, "로그인 실패!", null, HttpStatus.UNAUTHORIZED));
         response.getWriter().write(resStr);
     }
 }
