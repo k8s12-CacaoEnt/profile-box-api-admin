@@ -42,11 +42,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String email = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(jwtToken).getClaim("email").asString();
         if(email != null){
-            Member member = memberService.findLoginMemberByEmail(email);
-//            Member member = memberRedisService.getMemberFromRedis(jwtToken);
-//            if(member == null){
-//                member = memberService.findLoginMemberByEmail(email);
-//            }
+            Member member = memberRedisService.getMemberFromRedis(jwtToken);
+            if(member == null){
+                member = memberService.findLoginMemberByEmail(email);
+            }
             PrincipalDetails princialDetails = new PrincipalDetails(member);
             Authentication authentication = new UsernamePasswordAuthenticationToken(princialDetails, null, princialDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);

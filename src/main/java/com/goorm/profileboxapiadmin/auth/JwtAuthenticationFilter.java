@@ -1,6 +1,8 @@
 package com.goorm.profileboxapiadmin.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.goorm.profileboxcomm.dto.member.response.SelectMemberResponseDto;
+import com.goorm.profileboxcomm.dto.member.response.SelectrLoginMemberResponseDto;
 import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
@@ -58,7 +60,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jwtToken = jwtProvider.createJwtAccessToken(principalDetails);
 
         // Redis 저장
-//        memberRedisService.saveMemberToRedis(jwtToken, principalDetails.getMember());
+        memberRedisService.saveMemberToRedis(jwtToken, principalDetails.getMember());
 
         // response 설정
 //        ResponseCookie cookie = jwtProvider.createJwtAccessTokenCookie(jwtToken);
@@ -68,7 +70,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
-        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.SUCCESS, "로그인 성공! jwt 토큰 발급 완료", jwtToken));
+
+        SelectrLoginMemberResponseDto loginResponseDto = new SelectrLoginMemberResponseDto(
+                new SelectMemberResponseDto(principalDetails.getMember())
+                , jwtToken);
+
+        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.SUCCESS, "로그인 성공! jwt 토큰 발급 완료", loginResponseDto));
         response.getWriter().write(resStr);
 
         System.out.println("토큰 발급됨");
