@@ -1,6 +1,7 @@
 package com.goorm.profileboxapiadmin.service;
 
 import com.goorm.profileboxcomm.dto.member.MemberDTO;
+import com.goorm.profileboxcomm.dto.member.request.CreateMemberRequestDTO;
 import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.exception.ApiException;
 import com.goorm.profileboxcomm.exception.ExceptionEnum;
@@ -27,12 +28,18 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    public Boolean isAlready(String memberEmail) {
+        return memberRepository.existsByMemberEmail(memberEmail);
+    }
+
     @Transactional
-    public MemberDTO saveMember(MemberDTO dto) {
-        dto.setMemberPassword(passwordEncoder.encode(dto.getMemberPassword()));
-        Member entity = MemberDTO.toEntity(dto);
+    public MemberDTO saveMember(CreateMemberRequestDTO dto) {
+        if(isAlready(dto.getMemberEmail())) throw new ApiException(ExceptionEnum.MEMBER_ALREADY_EXIST);
+        //dto.setMemberPassword(passwordEncoder.encode(dto.getMemberPassword()));
+        Member entity = CreateMemberRequestDTO.toEntity(dto);
+        System.out.println("*********회원가입할 " + entity);
+        entity.setMemberPassword(passwordEncoder.encode(entity.getMemberPassword()));
         MemberDTO memberDTO = Member.toDTO(memberRepository.save(entity));
-//        validateDuplicateMember(entity);
         return memberDTO;
     }
 
@@ -48,6 +55,15 @@ public class MemberService {
         Member member =  memberRepository.findMemberByMemberEmail(email)
                 .orElseThrow(() -> new ApiException(ExceptionEnum.LOGIN_FAILED));
 
+        MemberDTO memberDTO = Member.toDTO(member);
+        return memberDTO;
+    }
+
+
+    @Transactional
+    public MemberDTO findMemberByMemberId(Long memberId) {
+        Member member =  memberRepository.findMemberByMemberId(memberId)
+                .orElseThrow(() -> new ApiException(ExceptionEnum.LOGIN_FAILED));
         MemberDTO memberDTO = Member.toDTO(member);
         return memberDTO;
     }

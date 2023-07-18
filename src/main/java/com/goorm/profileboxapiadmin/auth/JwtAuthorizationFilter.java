@@ -41,6 +41,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         String email = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(jwtToken).getClaim("email").asString();
+//        String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
+//        // if 조건문 코드 한줄로 딱 하는거 찾아보기
+//        if(jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)){
+//            chain.doFilter(request, response);
+//            System.out.println("Header에 jwt관련 정보 없음");
+//            return; // status 코드 확인 필요.
+//        }
+
+//        String clientJwtToken = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX,"");
         if(email != null){
             Member member = memberRedisService.getMemberFromRedis(jwtToken);
             if(member == null){

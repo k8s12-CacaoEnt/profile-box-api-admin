@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goorm.profileboxcomm.dto.member.response.SelectMemberResponseDto;
 import com.goorm.profileboxcomm.dto.member.response.SelectrLoginMemberResponseDto;
 import com.goorm.profileboxcomm.entity.Member;
+import com.goorm.profileboxcomm.exception.ApiException;
+import com.goorm.profileboxcomm.exception.ExceptionEnum;
 import com.goorm.profileboxcomm.response.ApiResult;
 import com.goorm.profileboxcomm.response.ApiResultType;
 import com.goorm.profileboxcomm.service.MemberRedisService;
@@ -85,10 +87,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         System.out.println("로그인 실패!");
         // response 설정
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.ERROR, "로그인 실패!", null, HttpStatus.UNAUTHORIZED));
-        response.getWriter().write(resStr);
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String resStr = objectMapper.writeValueAsString(ApiResult.getResult(ApiResultType.ERROR, "로그인 실패!", null, HttpStatus.UNAUTHORIZED));
+//        response.getWriter().write(resStr);
+        throw new ApiException(ExceptionEnum.LOGIN_FAILED);
     }
 }

@@ -1,6 +1,7 @@
 package com.goorm.profileboxapiadmin.service;
 
 import com.goorm.profileboxcomm.dto.notice.NoticeDTO;
+import com.goorm.profileboxcomm.dto.notice.request.CreateNoticeRequestDTO;
 import com.goorm.profileboxcomm.entity.Member;
 import com.goorm.profileboxcomm.entity.Notice;
 import com.goorm.profileboxcomm.enumeration.FilmoType;
@@ -36,9 +37,9 @@ public class NoticeService {
     }
 
     @Transactional
-    public Notice registerNotice(NoticeDTO dto, Member member) throws ParseException {
+    public Notice registerNotice(CreateNoticeRequestDTO dto, Member member) throws ParseException {
         validate();
-        Notice entity = NoticeDTO.toEntity(dto);
+        Notice entity = CreateNoticeRequestDTO.toEntity(dto);
         entity.setMember(member);
         return noticeRepository.save(entity);
     }
