@@ -24,9 +24,13 @@ public class MemberController {
     @Autowired
     MemberService memberService;
 
+    @GetMapping("/test")
+    public String test() {
+        return "테스트 하기!! - 1";
+    }
     // 회원 전체 리스트 출력
     @GetMapping("/member/all")
-    public ApiResult<List<Member>> test() {
+    public ApiResult<List<Member>> all() {
         List<Member> list = memberService.testListAllMember();
         return ApiResult.getResult(ApiResultType.SUCCESS, "테스트 - 회원 전체 리스트 출력", list);
     }
