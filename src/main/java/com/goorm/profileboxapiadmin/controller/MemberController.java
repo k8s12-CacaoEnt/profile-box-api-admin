@@ -26,7 +26,7 @@ public class MemberController {
 
     @GetMapping("/test")
     public String test() {
-        return "테스트 하기!! - 1";
+        return "테스트 하기!! - 2";
     }
     // 회원 전체 리스트 출력
     @GetMapping("/member/all")
