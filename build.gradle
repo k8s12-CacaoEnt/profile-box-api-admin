@@ -39,6 +39,8 @@ dependencies {
 	implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
 	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 	compileOnly 'org.projectlombok:lombok'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 	//runtimeOnly 'com.h2database:h2'
 	//runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
