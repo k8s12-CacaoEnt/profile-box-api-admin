@@ -20,6 +20,10 @@ repositories {
 	mavenCentral()
 }
 
+bootJar {
+	mainClassName = 'com.goorm.ProfileBoxApiAdminApplication'
+}
+
 dependencies {
 	implementation project(':profile-box-comm')
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
