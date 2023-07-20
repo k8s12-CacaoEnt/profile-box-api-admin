@@ -13,7 +13,7 @@ env:
   GITOPS_DIR: gitops/api-admin/prod
   GITOPS_YAML_FILE: deployment.yaml
   AWS_REGION: ap-northeast-2
-  AWS_ECR_PATH: 204770130849.dkr.ecr.ap-northeast-2.amazonaws.com/rofile-box-admin
+  AWS_ECR_PATH: 204770130849.dkr.ecr.ap-northeast-2.amazonaws.com/profile-box-admin
 
 jobs:
   build-image-push-to-ecr:
