@@ -30,22 +30,6 @@ jobs:
           repository: ${{ env.ORGANIZATION }}/${{ env.ROOT }}
           ref: main
 
-      - name: root directory structure
-        run: |
-          echo "Current directory is $(pwd)"
-
-      - name: checkout admin
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.ORGANIZATION }}/${{ env.ADMIN }}
-          ref: main
-          path: ${{ env.ADMIN }}
-
-      - name: admin directory structure
-        run: |
-          echo "Current directory is $(pwd)"
-          
-
       - name: checkout comm
         uses: actions/checkout@v3
         with:
@@ -53,9 +37,12 @@ jobs:
           ref: main
           path: ${{ env.COMM }}
 
-      - name: comm directory structure
-        run: |
-          echo "Current directory is $(pwd)"
+      - name: checkout admin
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.ORGANIZATION }}/${{ env.ADMIN }}
+          ref: main
+          path: ${{ env.ADMIN }}
 
 #      - name: checkout gitops
 #        uses: actions/checkout@v3
@@ -91,7 +78,7 @@ jobs:
         run: |
           cd ${{ env.USER_GIT }}
           pwd
-          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest $(pwd)}
+          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest .}
           docker push ${{ env.AWS_ECR_PATH }}:latest
 
 #      - name: Update GitOps YAML Version and Commit
