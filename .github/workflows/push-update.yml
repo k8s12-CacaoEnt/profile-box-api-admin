@@ -52,7 +52,7 @@ jobs:
         with:
           repository: ${{ env.ORGANIZATION_NAME }}/${{ env.ADMIN_GIT_REPOSITORY }}
           ref: main
-          path: ${{ env.USER_GIT_REPOSITORY }}
+          path: ${{ env.ADMIN_GIT_REPOSITORY }}
 
       - name: admin directory structure
         run: |
