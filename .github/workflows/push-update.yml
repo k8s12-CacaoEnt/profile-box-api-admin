@@ -91,7 +91,7 @@ jobs:
         run: |
           cd ${{ env.USER_GIT }}
           pwd
-          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest .
+          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest $(pwd)}
           docker push ${{ env.AWS_ECR_PATH }}:latest
 
 #      - name: Update GitOps YAML Version and Commit
