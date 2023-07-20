@@ -47,7 +47,8 @@ jobs:
         run: |
           echo "Current directory is $(pwd)"
           
-                - name: checkout comm
+
+      - name: checkout comm
         uses: actions/checkout@v3
         with:
           repository: ${{ env.ORGANIZATION_NAME }}/${{ env.COMM_REPOSITORY }}
