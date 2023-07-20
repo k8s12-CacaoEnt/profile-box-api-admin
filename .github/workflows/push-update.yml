@@ -44,6 +44,10 @@ jobs:
           ref: main
           path: ${{ env.ADMIN }}
 
+      - name: current directory
+        run: |
+          echo "Current directory is $(pwd)"
+          ls -R
 #      - name: checkout gitops
 #        uses: actions/checkout@v3
 #        with:
@@ -78,7 +82,7 @@ jobs:
         run: |
           cd ${{ env.USER_GIT }}
           pwd
-          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest .
+          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest /home/runner/work/profile-box-api-admin
           docker push ${{ env.AWS_ECR_PATH }}:latest
 
 #      - name: Update GitOps YAML Version and Commit
