@@ -32,6 +32,10 @@ jobs:
           repository: ${{ env.ORGANIZATION_NAME }}/${{ env.ROOT_REPOSITORY }}
           ref: main
 
+      - name: root directory structure
+        run: |
+          echo "Current directory is $(pwd)"
+
       - name: checkout comm
         uses: actions/checkout@v3
         with:
@@ -39,12 +43,20 @@ jobs:
           ref: main
           path: ${{ env.COMM_REPOSITORY }}
 
+      - name: comm directory structure
+        run: |
+          echo "Current directory is $(pwd)"
+
       - name: checkout admin
         uses: actions/checkout@v3
         with:
           repository: ${{ env.ORGANIZATION_NAME }}/${{ env.ADMIN_GIT_REPOSITORY }}
           ref: main
           path: ${{ env.USER_GIT_REPOSITORY }}
+
+      - name: admin directory structure
+        run: |
+          echo "Current directory is $(pwd)"
 
 #      - name: checkout gitops
 #        uses: actions/checkout@v3
