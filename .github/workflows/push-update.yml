@@ -80,8 +80,6 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          cd ${{ env.USER_GIT }}
-          pwd
           docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest ./profile-box-api-admin
           docker push ${{ env.AWS_ECR_PATH }}:latest
 
