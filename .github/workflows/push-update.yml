@@ -32,19 +32,19 @@ jobs:
           repository: ${{ env.ORGANIZATION_NAME }}/${{ env.ROOT_REPOSITORY }}
           ref: main
 
-      - name: checkout admin
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.ORGANIZATION_NAME }}/${{ env.ADMIN_GIT_REPOSITORY }}
-          ref: main
-          path: ${{ env.USER_GIT_REPOSITORY }}
-
       - name: checkout comm
         uses: actions/checkout@v3
         with:
           repository: ${{ env.ORGANIZATION_NAME }}/${{ env.COMM_REPOSITORY }}
           ref: main
           path: ${{ env.COMM_REPOSITORY }}
+
+      - name: checkout admin
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.ORGANIZATION_NAME }}/${{ env.ADMIN_GIT_REPOSITORY }}
+          ref: main
+          path: ${{ env.USER_GIT_REPOSITORY }}
 
 #      - name: checkout gitops
 #        uses: actions/checkout@v3
