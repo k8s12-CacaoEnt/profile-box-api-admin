@@ -3,7 +3,7 @@ name: 'push-update'
 on:
   push:
     branches: [ main ]
-#1
+#2
 env:
   ORGANIZATION: k8s12-CacaoEnt
   ROOT: profilehub
