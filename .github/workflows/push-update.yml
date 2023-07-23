@@ -13,6 +13,7 @@ env:
   GITOPS_DIR: gitops/api-admin/prod
   GITOPS_YAML_FILE: deployment.yaml
   AWS_REGION: ap-northeast-2
+  AWS_ECR_REPOSITORY: profile-box-admin
   AWS_ECR_PATH: 204770130849.dkr.ecr.ap-northeast-2.amazonaws.com/profile-box-admin
 
 jobs:
@@ -91,10 +92,8 @@ jobs:
       - name: Update GitOps YAML Version and Commit
         run: |
           cd ${{ env.GITOPS_REPOSITORY }}/${{ env.GITOPS_DIR }}
-          sed -i 's/${{ env.ADMIN }}:.*/${{ env.ADMIN }}:last/' ${{env.GITOPS_YAML_FILE}}
+          sed -i 's/${{ env.AWS_ECR_REPOSITORY }}:.*/${{ env.AWS_ECR_REPOSITORY }}:last/' ${{env.GITOPS_YAML_FILE}}
           cd ../../../
-          rm -rf .git/
-          git init
           git config user.name ${{ secrets.USER_NAME }}
           git config user.email ${{ secrets.USER_EMAIL }}
           git add ${{ env.GITOPS_DIR }}/${{ env.GITOPS_YAML_FILE }}
