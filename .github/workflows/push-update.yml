@@ -86,13 +86,13 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         run: |
           cd ${{ env.ADMIN }}
-          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:last .
-          docker push ${{ env.AWS_ECR_PATH }}:last
+          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest .
+          docker push ${{ env.AWS_ECR_PATH }}:latest
 
       - name: Update GitOps YAML Version and Commit
         run: |
           cd ${{ env.GITOPS_REPOSITORY }}/${{ env.GITOPS_DIR }}
-          sed -i 's/${{ env.AWS_ECR_REPOSITORY }}:.*/${{ env.AWS_ECR_REPOSITORY }}:last/' ${{env.GITOPS_YAML_FILE}}
+          sed -i 's/${{ env.AWS_ECR_REPOSITORY }}:.*/${{ env.AWS_ECR_REPOSITORY }}:latest/' ${{env.GITOPS_YAML_FILE}}
           cd ../../../
           git config user.name ${{ secrets.USER_NAME }}
           git config user.email ${{ secrets.USER_EMAIL }}
