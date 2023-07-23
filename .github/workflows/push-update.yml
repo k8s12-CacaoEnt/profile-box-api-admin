@@ -86,8 +86,8 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         run: |
           cd ${{ env.ADMIN }}
-          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:latest .
-          docker push ${{ env.AWS_ECR_PATH }}:latest
+          docker build --no-cache -t ${{ env.AWS_ECR_PATH }}:last .
+          docker push ${{ env.AWS_ECR_PATH }}:last
 
       - name: Update GitOps YAML Version and Commit
         run: |
