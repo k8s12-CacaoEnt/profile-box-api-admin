@@ -81,7 +81,6 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       run: |
         cd ${{ env.ADMIN_REPOSITORY }}
-        pwd
         docker build --no-cache -t ${{ env.AWS_ECR_REGISTRY }}/${{ env.AWS_ECR_REPOSITORY }}:${{env.IMG_TAG}} .
         docker push ${{ env.AWS_ECR_REGISTRY }}/${{ env.AWS_ECR_REPOSITORY }}:${{env.IMG_TAG}}
   
