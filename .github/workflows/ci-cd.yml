@@ -92,5 +92,5 @@ jobs:
           git config user.name ${{ secrets.USER_NAME }}
           git config user.email ${{ secrets.USER_EMAIL }}
           git add ${{ env.GITOPS_DIR }}/${{ env.GITOPS_YAML_FILE }}
-          git commit -m "Update YAML Image Tag To ${{ env.IMG_TAG }}"
+          git commit -m "[ci-cd-api-admin] Update YAML Image Tag To ${{ env.IMG_TAG }}"
           git push origin main
